@@ -24,14 +24,16 @@
   <div id="welcome" style="display:none;"></div>
 
   <script>
-    const liffId = "2007981677-Z8m3omk4"; // ใส่ LIFF ID ของคุณ
+    const liffId = "2007981677-Z8m3omk4"; // LIFF ID ของคุณ
     let userProfile;
 
     async function main() {
       await liff.init({ liffId });
       if (!liff.isLoggedIn()) liff.login();
+
       userProfile = await liff.getProfile();
-      
+
+      // เช็คผู้ใช้
       google.script.run.withSuccessHandler(handleCheckUser)
         .checkUser(userProfile.userId);
     }
@@ -40,8 +42,10 @@
       if (res.exists) {
         document.getElementById("welcome").style.display = "block";
         document.getElementById("welcome").innerText = `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
+        document.getElementById("formContainer").style.display = "none";
       } else {
         document.getElementById("formContainer").style.display = "block";
+        document.getElementById("welcome").style.display = "none";
       }
     }
 
@@ -55,10 +59,16 @@
         phone: document.getElementById("phone").value,
         address: document.getElementById("address").value
       };
-      
+
+      // ตรวจสอบกรอกครบ
+      if (!userObj.firstName || !userObj.lastName || !userObj.gender || !userObj.phone || !userObj.address) {
+        alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        return;
+      }
+
       google.script.run.withSuccessHandler(() => {
         alert("ลงทะเบียนเรียบร้อย!");
-        location.reload();
+        location.reload(); // reload แล้วจะเห็นข้อความต้อนรับ
       }).registerUser(userObj);
     }
 
