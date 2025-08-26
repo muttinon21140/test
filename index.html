@@ -7,7 +7,6 @@
 </head>
 <body>
   <h1>ลงทะเบียนผู้ใช้</h1>
-
   <div id="formContainer" style="display:none;">
     <p>ชื่อ: <input id="firstName"></p>
     <p>นามสกุล: <input id="lastName"></p>
@@ -22,18 +21,15 @@
     <p>ที่อยู่: <input id="address"></p>
     <button onclick="register()">ลงทะเบียน</button>
   </div>
-
   <div id="welcome" style="display:none;"></div>
 
   <script>
-    const liffId = "2007981677-Z8m3omk4"; // LIFF ID ของคุณ
-    const webAppUrl = "https://script.google.com/macros/s/AKfycby8Pb4Ns0T7jUIFUdytFqna5TzH6_caNqqDluNbOymHgKzjaWGMkxVYqFnOjhMAU_rn/exec"; // URL Web App
-
+    const liffId = "2007981677-Z8m3omk4"; 
+    const apiUrl = "https://script.google.com/macros/s/AKfycby8Pb4Ns0T7jUIFUdytFqna5TzH6_caNqqDluNbOymHgKzjaWGMkxVYqFnOjhMAU_rn/exec";
     let userProfile;
 
     async function main() {
       await liff.init({ liffId });
-
       if (!liff.isLoggedIn()) {
         liff.login();
         return;
@@ -41,20 +37,20 @@
 
       userProfile = await liff.getProfile();
 
-      // เรียก API ไปเช็คว่าลงทะเบียนแล้วหรือยัง
-      fetch(`${webAppUrl}?userId=${userProfile.userId}`)
+      // เช็คผู้ใช้มีอยู่หรือยัง
+      fetch(apiUrl + "?userId=" + userProfile.userId)
         .then(res => res.json())
         .then(data => handleCheckUser(data))
         .catch(err => {
-          console.error("fetch error:", err);
+          console.error("Check user error:", err);
+          alert("⚠️ ตรวจสอบผู้ใช้ล้มเหลว: " + err);
         });
     }
 
     function handleCheckUser(res) {
       if (res.exists) {
         document.getElementById("welcome").style.display = "block";
-        document.getElementById("welcome").innerText =
-          `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
+        document.getElementById("welcome").innerText = `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
         document.getElementById("formContainer").style.display = "none";
       } else {
         document.getElementById("formContainer").style.display = "block";
@@ -78,22 +74,26 @@
         return;
       }
 
-      fetch(webAppUrl, {
+      fetch(apiUrl, {
         method: "POST",
         body: JSON.stringify(userObj),
         headers: {
           "Content-Type": "application/json"
         }
       })
-        .then(res => res.json())
-        .then(data => {
+      .then(res => res.json())
+      .then(data => {
+        if (data.result === "success") {
           alert("✅ ลงทะเบียนเรียบร้อย!");
           location.reload();
-        })
-        .catch(err => {
-          console.error("fetch error:", err);
-          alert("❌ เกิดข้อผิดพลาดในการลงทะเบียน");
-        });
+        } else {
+          alert("❌ ลงทะเบียนไม่สำเร็จ: " + (data.message || "Unknown error"));
+        }
+      })
+      .catch(err => {
+        console.error("Register error:", err);
+        alert("❌ เกิดข้อผิดพลาด: " + err);
+      });
     }
 
     main();
