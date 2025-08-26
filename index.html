@@ -26,28 +26,36 @@
   <div id="welcome" style="display:none;"></div>
 
   <script>
-    const liffId = "2007981677-Z8m3omk4"; // LIFF ID
-    const apiUrl = "https://script.google.com/macros/s/AKfycbx6byXWQeJBcHK89Ju47CqqGYlaU79PkS7joKP3OFE20WfZRqOdBES5umP_6pbUO15G/exec"; // Web App URL
+    const liffId = "2007981677-Z8m3omk4";
+    const apiUrl = "https://script.google.com/macros/s/AKfycbx6byXWQeJBcHK89Ju47CqqGYlaU79PkS7joKP3OFE20WfZRqOdBES5umP_6pbUO15G/exec";
     let userProfile;
 
     async function main() {
       await liff.init({ liffId });
-      if (!liff.isLoggedIn()) liff.login();
+
+      if (!liff.isLoggedIn()) {
+        // ใส่ redirectUri ป้องกันลูป
+        liff.login({ redirectUri: window.location.href });
+        return; // รอหลัง login กลับมา
+      }
 
       userProfile = await liff.getProfile();
 
-      // ตรวจสอบว่าลงทะเบียนแล้วหรือยัง
-      const res = await fetch(`${apiUrl}?userId=${userProfile.userId}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`${apiUrl}?userId=${userProfile.userId}`);
+        const data = await res.json();
 
-      if (data.exists) {
-        document.getElementById("welcome").style.display = "block";
-        document.getElementById("welcome").innerText =
-          `สวัสดี ${data.data[2]} ${data.data[3]}! คุณลงทะเบียนแล้ว`;
-        document.getElementById("formContainer").style.display = "none";
-      } else {
-        document.getElementById("formContainer").style.display = "block";
-        document.getElementById("welcome").style.display = "none";
+        if (data.exists && data.data) {
+          document.getElementById("welcome").style.display = "block";
+          document.getElementById("welcome").innerText =
+            `สวัสดี ${data.data[2]} ${data.data[3]}! คุณลงทะเบียนแล้ว`;
+          document.getElementById("formContainer").style.display = "none";
+        } else {
+          document.getElementById("formContainer").style.display = "block";
+          document.getElementById("welcome").style.display = "none";
+        }
+      } catch (err) {
+        alert("❌ เกิดข้อผิดพลาดในการโหลดข้อมูล: " + err);
       }
     }
 
@@ -73,7 +81,6 @@
           body: JSON.stringify(userObj),
           headers: { "Content-Type": "application/json" }
         });
-
         const data = await res.json();
         if (data.success) {
           alert("ลงทะเบียนเรียบร้อย!");
