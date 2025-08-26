@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>LINE LIFF Registration</title>
+  <title>LIFF Registration</title>
   <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 </head>
 <body>
@@ -24,7 +24,9 @@
   <div id="welcome" style="display:none;"></div>
 
   <script>
-    const liffId = "2007981677-Z8m3omk4"; // LIFF ID ของคุณ
+    const liffId = "2007981677-Z8m3omk4"; // ใส่ LIFF ID ของคุณ
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbxha-9oEkbKlVPrXMRcOlLvA6iqWJVOVSZMs0EsoenUO2qAn3hKusKLbl_91VlRl7Hg/exec"; // ใส่ URL ของ Web App
+
     let userProfile;
 
     async function main() {
@@ -33,15 +35,17 @@
 
       userProfile = await liff.getProfile();
 
-      // เช็คผู้ใช้
-      google.script.run.withSuccessHandler(handleCheckUser)
-        .checkUser(userProfile.userId);
-    }
+      // ตรวจสอบผู้ใช้ผ่าน fetch()
+      const res = await fetch(webAppUrl, {
+        method: "POST",
+        body: JSON.stringify({ userId: userProfile.userId }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const result = await res.json();
 
-    function handleCheckUser(res) {
-      if (res.exists) {
+      if (result.exists) {
         document.getElementById("welcome").style.display = "block";
-        document.getElementById("welcome").innerText = `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
+        document.getElementById("welcome").innerText = `สวัสดี ${userProfile.displayName}! คุณลงทะเบียนแล้ว`;
         document.getElementById("formContainer").style.display = "none";
       } else {
         document.getElementById("formContainer").style.display = "block";
@@ -49,7 +53,7 @@
       }
     }
 
-    function register() {
+    async function register() {
       const userObj = {
         userId: userProfile.userId,
         displayName: userProfile.displayName,
@@ -60,16 +64,19 @@
         address: document.getElementById("address").value
       };
 
-      // ตรวจสอบกรอกครบ
       if (!userObj.firstName || !userObj.lastName || !userObj.gender || !userObj.phone || !userObj.address) {
         alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
         return;
       }
 
-      google.script.run.withSuccessHandler(() => {
-        alert("ลงทะเบียนเรียบร้อย!");
-        location.reload(); // reload แล้วจะเห็นข้อความต้อนรับ
-      }).registerUser(userObj);
+      await fetch(webAppUrl, {
+        method: "POST",
+        body: JSON.stringify(userObj),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      alert("ลงทะเบียนเรียบร้อย!");
+      location.reload();
     }
 
     main();
