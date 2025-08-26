@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>LIFF Registration Debug</title>
+<title>LIFF Registration</title>
 <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 </head>
 <body>
@@ -27,25 +27,18 @@
 
 <script>
 const liffId = "2007981677-Z8m3omk4"; // ใส่ LIFF ID ของคุณ
-const webAppUrl = "https://script.google.com/macros/s/AKfycbwFyfYHZDx6MsTPLtzEmydoT6Cndj80OlpYuQljy8tYz65BGSvspI9VbnfPJ7-JIiJQ/exec";
+const webAppUrl = "https://script.google.com/macros/s/AKfycbzxXCVJ6IMi8r_DeDPBOtu75bGTQYpVphgXlGE_thxvs2FTSI9mWDDUW-qs47ONdeGx/exec"; // URL จากขั้นตอน 3
 
 let userProfile;
 
 async function main() {
   await liff.init({ liffId });
-  console.log("LIFF initialized");
 
-  if (!liff.isLoggedIn()) {
-    console.log("User not logged in, redirecting...");
-    liff.login();
-    return;
-  }
+  if (!liff.isLoggedIn()) liff.login();
 
   try {
     userProfile = await liff.getProfile();
-    console.log("User profile:", userProfile);
 
-    // ตรวจสอบผู้ใช้
     const res = await fetch(webAppUrl, {
       method: "POST",
       body: JSON.stringify({ userId: userProfile.userId }),
@@ -55,18 +48,18 @@ async function main() {
     const result = await res.json();
     console.log("Check user result:", result);
 
-    if (result.error) {
+    if(result.error){
       alert("เกิดข้อผิดพลาด: " + result.error);
       document.getElementById("formContainer").style.display = "block";
-    } else if (result.exists) {
+    } else if(result.exists){
       document.getElementById("welcome").style.display = "block";
       document.getElementById("welcome").innerText = `สวัสดี ${userProfile.displayName}! คุณลงทะเบียนแล้ว`;
     } else {
       document.getElementById("formContainer").style.display = "block";
     }
 
-  } catch(err) {
-    console.error("Error fetching user data:", err);
+  } catch(err){
+    console.error(err);
     alert("เกิดข้อผิดพลาดในการเชื่อมต่อ Web App: " + err.message);
     document.getElementById("formContainer").style.display = "block";
   }
@@ -83,7 +76,7 @@ async function register() {
     address: document.getElementById("address").value
   };
 
-  if (!userObj.firstName || !userObj.lastName || !userObj.gender || !userObj.phone || !userObj.address) {
+  if(!userObj.firstName || !userObj.lastName || !userObj.gender || !userObj.phone || !userObj.address){
     alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
     return;
   }
@@ -105,8 +98,8 @@ async function register() {
     alert("ลงทะเบียนเรียบร้อย!");
     location.reload();
 
-  } catch(err) {
-    console.error("Error registering user:", err);
+  } catch(err){
+    console.error(err);
     alert("เกิดข้อผิดพลาดในการลงทะเบียน: " + err.message);
   }
 }
