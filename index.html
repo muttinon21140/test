@@ -7,10 +7,11 @@
 </head>
 <body>
   <h1>ลงทะเบียนผู้ใช้</h1>
+
   <div id="formContainer" style="display:none;">
     <p>ชื่อ: <input id="firstName"></p>
     <p>นามสกุล: <input id="lastName"></p>
-    <p>เพศ: 
+    <p>เพศ:
       <select id="gender">
         <option value="">เลือกเพศ</option>
         <option value="ชาย">ชาย</option>
@@ -21,36 +22,28 @@
     <p>ที่อยู่: <input id="address"></p>
     <button onclick="register()">ลงทะเบียน</button>
   </div>
+
   <div id="welcome" style="display:none;"></div>
 
   <script>
-    const liffId = "2007981677-Z8m3omk4"; 
-    const apiUrl = "https://script.google.com/macros/s/AKfycby8Pb4Ns0T7jUIFUdytFqna5TzH6_caNqqDluNbOymHgKzjaWGMkxVYqFnOjhMAU_rn/exec";
+    const liffId = "2007981677-Z8m3omk4"; // LIFF ID
+    const apiUrl = "https://script.google.com/macros/s/AKfycbx6byXWQeJBcHK89Ju47CqqGYlaU79PkS7joKP3OFE20WfZRqOdBES5umP_6pbUO15G/exec"; // Web App URL
     let userProfile;
 
     async function main() {
       await liff.init({ liffId });
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
+      if (!liff.isLoggedIn()) liff.login();
 
       userProfile = await liff.getProfile();
 
-      // เช็คผู้ใช้มีอยู่หรือยัง
-      fetch(apiUrl + "?userId=" + userProfile.userId)
-        .then(res => res.json())
-        .then(data => handleCheckUser(data))
-        .catch(err => {
-          console.error("Check user error:", err);
-          alert("⚠️ ตรวจสอบผู้ใช้ล้มเหลว: " + err);
-        });
-    }
+      // ตรวจสอบว่าลงทะเบียนแล้วหรือยัง
+      const res = await fetch(`${apiUrl}?userId=${userProfile.userId}`);
+      const data = await res.json();
 
-    function handleCheckUser(res) {
-      if (res.exists) {
+      if (data.exists) {
         document.getElementById("welcome").style.display = "block";
-        document.getElementById("welcome").innerText = `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
+        document.getElementById("welcome").innerText =
+          `สวัสดี ${data.data[2]} ${data.data[3]}! คุณลงทะเบียนแล้ว`;
         document.getElementById("formContainer").style.display = "none";
       } else {
         document.getElementById("formContainer").style.display = "block";
@@ -58,7 +51,7 @@
       }
     }
 
-    function register() {
+    async function register() {
       const userObj = {
         userId: userProfile.userId,
         displayName: userProfile.displayName,
@@ -74,26 +67,23 @@
         return;
       }
 
-      fetch(apiUrl, {
-        method: "POST",
-        body: JSON.stringify(userObj),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.result === "success") {
-          alert("✅ ลงทะเบียนเรียบร้อย!");
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          body: JSON.stringify(userObj),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert("ลงทะเบียนเรียบร้อย!");
           location.reload();
         } else {
-          alert("❌ ลงทะเบียนไม่สำเร็จ: " + (data.message || "Unknown error"));
+          alert("❌ เกิดข้อผิดพลาด: " + data.error);
         }
-      })
-      .catch(err => {
-        console.error("Register error:", err);
+      } catch (err) {
         alert("❌ เกิดข้อผิดพลาด: " + err);
-      });
+      }
     }
 
     main();
