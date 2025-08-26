@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LINE LIFF Registration</title>
+  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+</head>
+<body>
+  <h1>ลงทะเบียนผู้ใช้</h1>
+  <div id="formContainer" style="display:none;">
+    <p>ชื่อ: <input id="firstName"></p>
+    <p>นามสกุล: <input id="lastName"></p>
+    <p>เพศ: 
+      <select id="gender">
+        <option value="">เลือกเพศ</option>
+        <option value="ชาย">ชาย</option>
+        <option value="หญิง">หญิง</option>
+      </select>
+    </p>
+    <p>เบอร์โทร: <input id="phone"></p>
+    <p>ที่อยู่: <input id="address"></p>
+    <button onclick="register()">ลงทะเบียน</button>
+  </div>
+  <div id="welcome" style="display:none;"></div>
+
+  <script>
+    const liffId = "YOUR_LIFF_ID"; // ใส่ LIFF ID ของคุณ
+    let userProfile;
+
+    async function main() {
+      await liff.init({ liffId });
+      if (!liff.isLoggedIn()) liff.login();
+      userProfile = await liff.getProfile();
+      
+      google.script.run.withSuccessHandler(handleCheckUser)
+        .checkUser(userProfile.userId);
+    }
+
+    function handleCheckUser(res) {
+      if (res.exists) {
+        document.getElementById("welcome").style.display = "block";
+        document.getElementById("welcome").innerText = `สวัสดี ${res.data[2]} ${res.data[3]}! คุณลงทะเบียนแล้ว`;
+      } else {
+        document.getElementById("formContainer").style.display = "block";
+      }
+    }
+
+    function register() {
+      const userObj = {
+        userId: userProfile.userId,
+        displayName: userProfile.displayName,
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value,
+        gender: document.getElementById("gender").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value
+      };
+      
+      google.script.run.withSuccessHandler(() => {
+        alert("ลงทะเบียนเรียบร้อย!");
+        location.reload();
+      }).registerUser(userObj);
+    }
+
+    main();
+  </script>
+</body>
+</html>
