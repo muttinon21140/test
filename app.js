@@ -57,7 +57,9 @@ async function loadPage(page) {
     // หลังโหลด fragment ให้ลองใส่ชื่ออีกครั้ง
     if (liff.isLoggedIn()) {
       const profile = await liff.getProfile();
+      updateUserId(profile.userId);
       updateDisplayName(profile.displayName);
+      updatePictureUrl(profile.pictureUrl);
     }
   } catch (err) {
     document.getElementById("app").innerHTML =
