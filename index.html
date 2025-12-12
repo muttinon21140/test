@@ -151,8 +151,8 @@
     </style>
 </head>
 
-<body>   
-    <div class="app-container-index">   
+<body>
+    <div class="app-container-index">
         <div id="app"></div>
         <footer class="footer-buttons">
             <div class="navigation">
@@ -189,41 +189,6 @@
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="app.js"></script>
-    <script>
-        // เลือกรายการเมนูทั้งหมด (li ทั้งหมดที่มี class="list")
-        const list = document.querySelectorAll(".list");
-
-        function activeLink() {
-            // 1. ลบคลาส active ออกจากทุกตัวก่อน
-            list.forEach((item) => item.classList.remove("active"));
-            // 2. เติมคลาส active ให้กับตัวที่ถูกคลิก (this)
-            this.classList.add("active");
-        }
-
-        // วนลูปเพิ่ม Event Listener ให้ทุกเมนู
-        list.forEach((item) => item.addEventListener("click", activeLink));
-        async function loadPage(page) {
-            try {
-                const res = await fetch(page + ".html");
-                const html = await res.text();
-                document.getElementById("app").innerHTML = html;
-            } catch (err) {
-                document.getElementById("app").innerHTML =
-                    "<p>Error loading page.</p>";
-            }
-        }
-
-        function handleHashChange() {
-            const hash = location.hash.replace("#", "") || "home";
-            loadPage(hash);
-        }
-
-        // เมื่อเปิดเว็บครั้งแรก
-        handleHashChange();
-
-        // เมื่อกดลิงก์ #xxx
-        window.addEventListener("hashchange", handleHashChange);
-    </script>
 </body>
 
 </html>

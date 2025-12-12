@@ -19,24 +19,35 @@ async function initializeLiff() {
 }
 
 // ใส่ชื่อให้ทุก element  ที่เจอ
-function updateUserId(userId) {  
+function updateUserId(userId) {
   const elements = document.querySelectorAll(".userId"); // เปลี่ยนจาก #userId เป็น class
-  elements.forEach(el => el.textContent = userId);
+  elements.forEach((el) => (el.textContent = userId));
 }
 
 function updateDisplayName(name) {
   const elements = document.querySelectorAll(".displayName"); // ใช้ class แทน id
-  elements.forEach(el => el.textContent = name);
+  elements.forEach((el) => (el.textContent = name));
 }
 
-function updatePictureUrl(pictureUrl){
+function updatePictureUrl(pictureUrl) {
   const imgs = document.querySelectorAll(".picture"); // ใช้ class และ <img>
-  imgs.forEach(img => {
+  imgs.forEach((img) => {
     img.src = pictureUrl;
     img.alt = "Profile Picture"; // เผื่อรูปไม่โหลด
   });
 }
+// เลือกรายการเมนูทั้งหมด (li ทั้งหมดที่มี class="list")
+const list = document.querySelectorAll(".list");
 
+function activeLink() {
+  // 1. ลบคลาส active ออกจากทุกตัวก่อน
+  list.forEach((item) => item.classList.remove("active"));
+  // 2. เติมคลาส active ให้กับตัวที่ถูกคลิก (this)
+  this.classList.add("active");
+}
+
+// วนลูปเพิ่ม Event Listener ให้ทุกเมนู
+list.forEach((item) => item.addEventListener("click", activeLink));
 const loginBtn = document.getElementById("loginBtn");
 if (loginBtn) {
   loginBtn.addEventListener("click", () => liff.login());
@@ -62,8 +73,7 @@ async function loadPage(page) {
       updatePictureUrl(profile.pictureUrl);
     }
   } catch (err) {
-    document.getElementById("app").innerHTML =
-      "<p>Error loading page.</p>";
+    document.getElementById("app").innerHTML = "<p>Error loading page.</p>";
   }
 }
 
@@ -73,5 +83,8 @@ function handleHashChange() {
   loadPage(hash);
 }
 
+// เมื่อเปิดเว็บครั้งแรก
+handleHashChange();
+
+// เมื่อกดลิงก์ #xxx
 window.addEventListener("hashchange", handleHashChange);
-handleHashChange(); // โหลดหน้าแรก
