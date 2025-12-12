@@ -10,29 +10,31 @@
     <title>PetPet System index</title>
 
     <style>
-      body {
-        /* ล็อกหน้า Index ไม่ให้มี scrollbar */
-        overflow: hidden; 
-        height: 100vh;
+       body {
+        font-family: "Prompt", sans-serif;
+        background-color: #f0f4f9;
         margin: 0;
         padding: 0;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        height: 100vh;
       }
-      
+      iframe {
+        width: 100%;
+        height: 100vh;
+        border: 0;
+        margin-top: 0;
+        display: block;
+      }
       .app-container-index {
         width: 100%;
         max-width: 410px;
-        height: 100vh; /* เปลี่ยนจาก min-height เป็น height */
+        min-height: 100vh;
+        padding-bottom: 120px;
+        box-sizing: border-box;
         overflow: hidden; /* ล็อกไว้ */
         position: relative;
-      }
-      
-      iframe {
-        width: 100%;
-        /* ลบ margin-top: 20px ออก หรือใช้ calc เพื่อหักลบ */
-        height: 100vh; 
-        border: 0;
-        margin-top: 0; 
-        display: block;
       }
 
       /* -------------------- Footer Buttons -------------------- */
@@ -286,7 +288,7 @@
     <script src="https://static.line-scdn.net/liff/edge/versions/2.15.0/sdk.js"></script>
     <script>
       const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbwI-BOyib5C3WTM7vnc34pXIh6QhOUDvR8MoNGeQUuX8nJ2dUUE3ReAVbFjPBB1rzkM-w/exec";
+        "https://script.google.com/macros/s/AKfycbwugVcs-R0QGOXOj-A8iAm3SKsx8EmDB5Qf5iwUsDyOz_RY_HGRvKoGhh0qTyU62kQ2zQ/exec";
 
       let userId = "",
         displayName = "",
