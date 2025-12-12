@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -149,11 +150,11 @@
         }
     </style>
 </head>
-<body>
-    <h1>สวัสดี, <span id="displayName">...</span></h1>
-    <button id="loginBtn" style="display:none;">Login</button>
 
+<body>   
     <div class="app-container-index">
+     <h1>สวัสดี, <span id="displayName">...</span></h1>
+    <button id="loginBtn" style="display:none;">Login</button>   
         <div id="app"></div>
         <footer class="footer-buttons">
             <div class="navigation">
@@ -189,48 +190,41 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script src="app.js"></script>
+    <!-- <script src="app.js"></script> -->
     <script>
-        // 1. ฟังก์ชันโหลดเนื้อหาหน้า
-        async function loadPage(page) {
-            google.script.run
-                .withSuccessHandler(function (html) {
-                    document.getElementById("app").innerHTML = html;
-                })
-                .getPage(page);
-        }
+        // เลือกรายการเมนูทั้งหมด (li ทั้งหมดที่มี class="list")
+        const list = document.querySelectorAll(".list");
 
-        // 2. ฟังก์ชันอัปเดตเมนู active
-        function updateActiveMenu(page) {
-            const list = document.querySelectorAll(".list");
+        function activeLink() {
+            // 1. ลบคลาส active ออกจากทุกตัวก่อน
             list.forEach((item) => item.classList.remove("active"));
-            list.forEach((item) => {
-                const target = item.querySelector("a").dataset.page;
-                if (target === page) {
-                    item.classList.add("active");
-                }
-            });
+            // 2. เติมคลาส active ให้กับตัวที่ถูกคลิก (this)
+            this.classList.add("active");
         }
 
-        // 3. ฟังก์ชันคลิกเมนู
-        function menuClick(page) {
-            loadPage(page);
-            updateActiveMenu(page);
+        // วนลูปเพิ่ม Event Listener ให้ทุกเมนู
+        list.forEach((item) => item.addEventListener("click", activeLink));
+        async function loadPage(page) {
+            try {
+                const res = await fetch(page + ".html");
+                const html = await res.text();
+                document.getElementById("app").innerHTML = html;
+            } catch (err) {
+                document.getElementById("app").innerHTML =
+                    "<p>Error loading page.</p>";
+            }
         }
 
-        // 4. เพิ่ม data-page ให้ลิงก์เมนู
-        document.querySelectorAll(".list a").forEach(a => {
-            const href = a.getAttribute("href").replace("#", "");
-            a.dataset.page = href;
-            a.addEventListener("click", (e) => {
-                e.preventDefault(); // ป้องกัน default anchor
-                menuClick(href);
-            });
-        });
+        function handleHashChange() {
+            const hash = location.hash.replace("#", "") || "home";
+            loadPage(hash);
+        }
 
-        // 5. โหลดหน้าเริ่มต้น
-        loadPage("home");
-        updateActiveMenu("home");
+        // เมื่อเปิดเว็บครั้งแรก
+        handleHashChange();
+
+        // เมื่อกดลิงก์ #xxx
+        window.addEventListener("hashchange", handleHashChange);
     </script>
 </body>
 
