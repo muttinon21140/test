@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 100%;
+        max-width: 450px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 600;
+        font-size: 1.5rem;
+        border-bottom: 3px solid #275c27;
+        padding-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: 400;
+        color: #333;
+        font-size: 0.95rem;
+      }
+      input[type="text"],
+      input[type="tel"],
+      input[type="email"] {
+        width: 100%;
+        padding: 12px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 1rem;
+      }
+      button {
+        width: 100%;
+        padding: 15px;
+        margin-top: 30px;
+        background-color: #275c27;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #275c27;
+      }
+      /* Pridi font classes (kept for consistency) */
+      .pridi-semibold {
+        font-family: "Pridi", serif;
+        font-weight: 600;
+      }
+      /* Ensure the form is visible by default for this simplified version */
+      #registerForm {
+        display: block;
+      }
+      /* From Uiverse.io by adamgiebl */
+      .dots-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+
+      .dot {
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
+        border-radius: 10px;
+        background-color: #b3d4fc;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+
+      .dot:last-child {
+        margin-right: 0;
+      }
+
+      .dot:nth-child(1) {
+        animation-delay: -0.3s;
+      }
+
+      .dot:nth-child(2) {
+        animation-delay: -0.1s;
+      }
+
+      .dot:nth-child(3) {
+        animation-delay: 0.1s;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.8);
+          background-color: #b3d4fc;
+          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+        }
+        50% {
+          transform: scale(1.2);
+          background-color: #6793fb;
+          box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+        }
+        100% {
+          transform: scale(0.8);
+          background-color: #b3d4fc;
+          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+        }
+      }
+      .form-control {
+        margin-bottom: 10px;
+        position: relative;
+      }
+
+      .form-control.error input {
+        border-color: red;
+      }
+
+      .form-control.success input {
+        border-color: green;
+      }
+
+      .form-control small {
+        color: red;
+        visibility: hidden;
+      }
+
+      .form-control.error small {
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="pridi-semibold">ลงทะเบียนผู้ใช้งาน</h2>
+      <form
+        class="pridi-semibold"
+        id="registerForm"
+        onsubmit="submitForm(event);"
+        novalidate
+      >
+        <div class="form-control">
+          <label>ชื่อ-นามสกุล:</label><input type="text" id="name" required />
+          <small>error message</small>
+        </div>
+        <div class="form-control">
+          <label>เบอร์โทรศัพท์:</label
+          ><input type="tel" id="phone" maxlength="10" required />
+          <small>error message</small>
+        </div>
+        <div class="form-control">
+          <label>อีเมล:</label><input type="email" id="email" required />
+          <small>error message</small>
+        </div>
+        <div class="form-control">
+          <label>ที่อยู่:</label><input type="text" id="address" required />
+          <small>error message</small>
+        </div>
+
+        <div style="font-size: 14px; color: #555; margin-top: 15px">
+          หมายเหตุ: กรุณาตรวจสอบความถูกต้องของข้อมูลก่อนกดยืนยัน
+        </div>
+        <button type="submit" class="pridi-semibold">ลงทะเบียน</button>
+      </form>
+    </div>
+
+    <div
+      id="loadingOverlay"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        pointer-events: all;
+      "
+    >
+      <div class="dots-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      const userId = "<?= userId ?>";
+      const userLineName = "<?= userLineName ?>";
+      const userPictureUrl = "<?= profileImage ?>";
+
+      function showLoading() {
+        document.getElementById("loadingOverlay").style.display = "flex";
+      }
+
+      function hideLoading() {
+        document.getElementById("loadingOverlay").style.display = "none";
+      }
+
+      function submitForm(e) {
+        e.preventDefault();
+        showLoading();
+        const submitBtn = document.querySelector("button[type='submit']");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "กำลังบันทึก...";
+        submitBtn.style.backgroundColor = "#6c757d";
+
+        const nameInput = document.getElementById("name");
+        const phoneInput = document.getElementById("phone");
+        const emailInput = document.getElementById("email");
+        const addressInput = document.getElementById("address");
+
+        let hasError = false; // ✔ ใช้ตัวแปรเก็บ error
+
+        // ===== Validate =====
+        if (nameInput.value.trim() === "") {
+          showError(nameInput, "กรุณากรอกชื่อ-นามสกุล");
+          hasError = true;
+        } else {
+          showSuccess(nameInput);
+        }
+
+        if (
+          phoneInput.value.trim().length !== 10 ||
+          !/^\d{10}$/.test(phoneInput.value.trim())
+        ) {
+          showError(phoneInput, "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)");
+          hasError = true;
+        } else {
+          showSuccess(phoneInput);
+        }
+
+        if (emailInput.value.trim() === "") {
+          showError(emailInput, "กรุณากรอกอีเมล");
+          hasError = true;
+        } else {
+          showSuccess(emailInput);
+        }
+
+        if (addressInput.value.trim() === "") {
+          showError(addressInput, "กรุณากรอกที่อยู่");
+          hasError = true;
+        } else {
+          showSuccess(addressInput);
+        }
+
+        // ===== ถ้ามี error ให้หยุด ไม่ส่งฟอร์ม =====
+        if (hasError) {
+          hideLoading();
+          submitBtn.disabled = false;
+          submitBtn.textContent = "ลงทะเบียน";
+          submitBtn.style.backgroundColor = "#275c27";
+          return;
+        }
+
+        const data = {
+          line_uid: userId,
+          line_name: userLineName,
+          profile_image: userPictureUrl,
+          name: document.getElementById("name").value,
+          phone: document.getElementById("phone").value,
+          email: document.getElementById("email").value,
+          address: document.getElementById("address").value,
+        };
+
+        google.script.run
+          .withSuccessHandler(() => {
+            hideLoading();
+            Swal.fire(
+              "สำเร็จ!",
+              "ระบบได้รับข้อมูลการลงทะเบียนแล้ว",
+              "success"
+            ).then(() => {
+              showLoading();
+              window.location.href =
+                "?userId=" + userId + "&displayName=" + userLineName;
+            });
+            // .redirectRegisterPage(userId, userLineName);
+          })
+          .withFailureHandler(() => {
+            Swal.fire(
+              "ผิดพลาด",
+              "ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่",
+              "error"
+            );
+            submitBtn.disabled = false;
+            submitBtn.textContent = "ลงทะเบียน";
+          })
+          .saveToSheet(data);
+        return false;
+      }
+
+      function showError(input, message) {
+        const formControl = input.parentElement;
+        formControl.classList.add("error");
+        formControl.classList.remove("success");
+
+        const small = formControl.querySelector("small");
+        small.innerText = message;
+      }
+
+      function showSuccess(input) {
+        const formControl = input.parentElement;
+        formControl.classList.add("success");
+        formControl.classList.remove("error");
+      }
+    </script>
+  </body>
+</html>

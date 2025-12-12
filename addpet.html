@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADDPET</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* -------------------- Global Reset & Setup -------------------- */
+    body {
+      font-family: "Prompt", sans-serif;
+      background-color: #f0f4f9;
+      /* สีพื้นหลังอ่อน ๆ */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 410px;
+      /* จำกัดความกว้างเหมือนหน้าจอมือถือ */
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .add-pet-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .add-pet-form label {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .add-pet-form input,
+    .add-pet-form select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .add-pet-form button {
+      padding: 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .add-pet-form button:hover {
+      background-color: #45a049;
+    }
+
+    /* คอนเทนเนอร์หลัก (ปรับตามความจำเป็น) */
+    .file-upload-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: auto;
+    }
+
+    /* 1. วงกลมล้อมรอบรูปภาพตัวอย่าง */
+    .image-placeholder-wrapper {
+
+
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      /* รูปอยู่ในวงกลม */
+    }
+
+    /* 2. รูปภาพตัวอย่าง/Placeholder */
+    .placeholder-image {
+      width: 100%;
+      /* ทำให้ภาพเต็มความกว้างของ wrapper (วงกลม) */
+      height: 100%;
+      /* ทำให้ภาพเต็มความสูงของ wrapper (วงกลม) */
+      border-radius: 50%;
+      /* ให้ภาพเองมีขอบกลม */
+      object-fit: cover;
+      /* **สำคัญ:** ครอบคลุมพื้นที่โดยไม่ทำให้รูปบิดเบี้ยว */
+      display: none;
+      /* ซ่อนรูปภาพไว้ก่อน จนกว่าจะมีการอัปโหลด */
+      position: absolute;
+      /* วางทับไอคอนกล้อง */
+      top: 0;
+      left: 0;
+    }
+
+    /* 3. ไอคอนสถานะ (เครื่องหมายถูกสีเขียว) */
+    .status-icon {
+
+      position: absolute;
+      bottom: -5px;
+      /* ✔️ ทำให้โผล่ข้างล่างวงกลม */
+      right: -5px;
+      /* ✔️ ทำให้โผล่ข้างขวาวงกลม */
+      font-size: 30px;
+      color: #4CAF50;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+
+    .hidden-input {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+
+    .camera-icon-large {
+      font-size: 40px;
+      /* ทำให้ไอคอนกล้องใหญ่ขึ้น */
+      color: #666;
+    }
+
+    /* เพิ่มคลาสนี้เพื่อแสดงสถานะสำเร็จ */
+    .status-icon.visible {
+      opacity: 1;
+    }
+
+    .back-button {
+      position: absolute;
+      font-size: 28px;
+      color: #333;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <ion-icon name="arrow-back-outline" class="back-button"></ion-icon>
+    <h1>เพิ่มสัตว์เลี้ยง</h1>
+    <form class="add-pet-form">
+      <div class="file-upload-container">
+        <input type="file" id="actual-file-input" class="hidden-input" accept="image/*">
+        <label for="actual-file-input" class="image-placeholder-wrapper">
+          <img alt="รูปภาพสัตว์เลี้ยง" class="placeholder-image" src="">
+          <ion-icon class="camera-icon-large" name="camera-outline"></ion-icon>
+        </label>
+        <ion-icon class="status-icon" name="checkmark-circle"></ion-icon>
+      </div>
+      <label for="pet-image" style="text-align: center;">รูปภาพสัตว์เลี้ยง</label>
+      <label for="pet-name">ชื่อสัตว์เลี้ยง*:</label>
+      <input type="text" id="pet-name" name="pet-name" required />
+      <label for="pet-species">ประเภทสัตว์เลี้ยง*:</label>
+      <select id="pet-species" name="pet-species" required>
+        <option value="">-- กรุณาเลือกประเภท --</option>
+        <option value="dog">สุนัข</option>
+        <option value="cat">แมว</option>
+        <option value="bird">นก</option>
+        <option value="other">อื่น ๆ</option>
+      </select>
+      <label for="pet-breed">พันธุ์สัตว์เลี้ยง*:</label>
+      <input type="text" id="pet-breed" name="pet-breed" required />
+      <label for="pet-gender">เพศสัตว์เลี้ยง*:</label>
+      <select id="pet-gender" name="pet-gender" required>
+        <option value="">-- กรุณาเลือกเพศ --</option>
+        <option value="male">ผู้</option>
+        <option value="female">เมีย</option>
+      </select>
+      <label for="pet-birthday/adoptionday">วันเกิดหรือวันรับเลี้ยงสัตว์:</label>
+      <input type="date" id="pet-birthday" name="pet-birthday" />
+      <label for="pet-age">อายุสัตว์เลี้ยง:</label>
+      <input type="number" id="pet-age" name="pet-age" min="0" />
+      <label for="pet-status_sterilization">สถานะการทำหมัน</label>
+      <select id="pet-status_sterilization" name="pet-status_sterilization">
+        <option value="">-- กรุณาเลือกสถานะ --</option>
+        <option value="sterilized">ทำหมันแล้ว</option>
+        <option value="not_sterilized">ยังไม่ทำหมัน</option>
+      </select>
+      <label for="pet-weight">น้ำหนัก:</label>
+      <input type="number" id="pet-weight" name="pet-weight" min="0" step="0.1" />
+      <button type="submit" style="font-family: Prompt, sans-serif;">เพิ่มสัตว์เลี้ยง</button>
+    </form>
+  </div>
+  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" type="module"></script>
+  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" nomodule></script>
+  <script>
+    // JavaScript เพื่อจัดการการอัปโหลดรูปภาพ (ถ้าจำเป็น)
+    const actualFileInput = document.getElementById('actual-file-input');
+    const placeholderImage = document.querySelector('.placeholder-image');
+    const cameraIcon = document.querySelector('.camera-icon-large');
+    const successIndicator = document.querySelector('.status-icon');
+
+    actualFileInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          placeholderImage.src = e.target.result; // แสดงภาพที่อัปโหลด
+          placeholderImage.style.display = 'block'; // แสดงรูปภาพ
+          cameraIcon.style.display = 'none'; // ซ่อนไอคอนกล้อง
+          successIndicator.classList.add('visible'); // แสดงเครื่องหมายถูก
+        }
+        reader.readAsDataURL(file);
+      } else {
+        // กรณีผู้ใช้ยกเลิกการเลือกไฟล์
+        placeholderImage.src = '';
+        placeholderImage.style.display = 'none'; // ซ่อนรูปภาพ
+        cameraIcon.style.display = 'block'; // แสดงไอคอนกล้อง
+        successIndicator.classList.remove('visible'); // ซ่อนเครื่องหมายถูก
+      }
+    });
+    document.querySelector('.back-button').addEventListener('click', () => {
+      window.history.back();
+    });
+  </script>
+</body>
+
+</html>
