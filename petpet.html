@@ -1,243 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PetPet System</title>
 
     <style>
-        body {
-            font-family: "Prompt", sans-serif;
-            background-color: #f0f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-        }
+      body {
+        font-family: "Prompt", sans-serif;
+        background-color: #f0f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+      iframe {
+        width: 100%;
+        height: 100vh;
+        border: 0;
+      }
 
-        iframe {
-            width: 100%;
-            height: 100vh;
-            border: 0;
-        }
+      /* ———— YOUR NAVIGATION CSS (KEEPED EXACTLY AS IS) ———— */
 
-        /* ———— YOUR NAVIGATION CSS (KEEPED EXACTLY AS IS) ———— */
+      .app-container-index {
+        width: 100%;
+        max-width: 410px;
+        min-height: 100vh;
+        padding-bottom: 120px;
+        box-sizing: border-box;
+      }
 
-        .app-container-index {
-            width: 100%;
-            max-width: 410px;
-            min-height: 100vh;
-            padding-bottom: 120px;
-            box-sizing: border-box;
-        }
+      /* -------------------- Footer Buttons -------------------- */
+      .footer-buttons {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 410px;
+        /* จำกัดความกว้างเท่ากับ container */
+        display: flex;
+        gap: 10px;
+      }
 
-        .footer-buttons {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px);
-            max-width: 410px;
-            display: flex;
-            gap: 10px;
-        }
+      .navigation {
+        position: relative;
+        width: 330px;
+        height: 100px;
+        /* ความสูงของแถบ */
+        background: #fff;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.05);
+        padding: 0 20px;
+        /* ระยะห่างจากขอบซ้ายขวา */
+        margin: auto;
+      }
 
-        .navigation {
-            width: 330px;
-            height: 100px;
-            background: #fff;
-            border-radius: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.05);
-            padding: 0 20px;
-            margin: auto;
-        }
+      .navigation ul {
+        display: flex;
+        width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+        justify-content: space-between;
+        /* กระจายไอคอนให้ห่างเท่ากัน */
+      }
 
-        .navigation ul {
-            display: flex;
-            width: 100%;
-            padding: 0 10px;
-            justify-content: space-between;
-        }
+      .navigation ul li {
+        position: relative;
+        list-style: none;
+        width: 50px;
+        /* ความกว้างเริ่มต้น (วงกลม) */
+        height: 50px;
+        border-radius: 50px;
+        z-index: 1;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        /* จัดไอคอนกึ่งกลาง */
+        align-items: center;
+        transition: 0.5s;
+        /* ความนุ่มนวลตอนขยาย */
+        overflow: hidden;
+        /* ซ่อนข้อความที่ยาวเกินตอนยังไม่ขยาย */
+      }
 
-        .navigation ul li {
-            list-style: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: 0.5s;
-            overflow: hidden;
-        }
+      .navigation ul li a {
+        position: relative;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        width: 100%;
+        color: #333;
+        /* สีไอคอนปกติ */
+      }
 
-        .navigation ul li.active {
-            width: 140px;
-            background: #275c27;
-        }
+      .navigation ul li a .icon {
+        position: relative;
+        display: block;
+        min-width: 50px;
+        /* ต้องกำหนด min-width เพื่อไม่ให้ไอคอนเบี้ยว */
+        height: 50px;
+        line-height: 55px;
+        /* จัดกึ่งกลางแนวตั้ง */
+        text-align: center;
+        font-size: 1.5em;
+        transition: 0.5s;
+      }
 
-        .navigation ul li a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-        }
+      .navigation ul li a .title {
+        position: relative;
+        display: block;
+        padding-left: 0px;
+        height: 60px;
+        line-height: 60px;
+        white-space: nowrap;
+        /* ห้ามตัดบรรทัด */
+        opacity: 0;
+        /* ซ่อนข้อความไว้ก่อน */
+        transform: translateX(10px);
+        transition: 0.5s;
+        color: #fff;
+        /* สีข้อความตอน Active */
+        font-size: 0.85em;
+        font-weight: 500;
+      }
 
-        .navigation ul li.active a .icon {
-            color: #fff;
-        }
+      /* --- สถานะ Active (เมื่อถูกเลือก) --- */
 
-        .navigation ul li a .icon {
-            min-width: 50px;
-            height: 50px;
-            line-height: 55px;
-            text-align: center;
-            font-size: 1.5em;
-            transition: 0.5s;
-        }
+      .navigation ul li.active {
+        width: 140px;
+        /* ขยายความกว้าง */
+        background: #275c27;
+        /* สีพื้นหลังแคปซูล (Dark Navy) */
+      }
 
-        .navigation ul li a .title {
-            opacity: 0;
-            transform: translateX(10px);
-            transition: 0.5s;
-            color: #fff;
-            font-size: 0.85em;
-            font-weight: 500;
-        }
+      .navigation ul li.active a .icon {
+        color: #fff;
+        /* เปลี่ยนสีไอคอนเป็นขาว */
+      }
 
-        .navigation ul li.active a .title {
-            opacity: 1;
-            transform: translateX(0);
-        }
+      .navigation ul li.active a .title {
+        opacity: 1;
+        /* โชว์ข้อความ */
+        transform: translateX(0);
+        /* เลื่อนข้อความกลับมาที่เดิม */
+      }
 
-        /* Loading */
-        #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
+      /* -------------------- Loading Overlay -------------------- */
+      /* From Uiverse.io by adamgiebl */
+      .dots-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
 
-        .dots-container {
-            display: flex;
-        }
+      .dot {
+        height: 20px;
+        width: 20px;
+        margin-right: 10px;
+        border-radius: 10px;
+        background-color: #b3d4fc;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
 
-        .dot {
-            height: 20px;
-            width: 20px;
-            margin-right: 10px;
-            border-radius: 10px;
-            background-color: #b3d4fc;
-            animation: pulse 1.5s infinite ease-in-out;
+      .dot:last-child {
+        margin-right: 0;
+      }
+
+      .dot:nth-child(1) {
+        animation-delay: -0.3s;
+      }
+
+      .dot:nth-child(2) {
+        animation-delay: -0.1s;
+      }
+
+      .dot:nth-child(3) {
+        animation-delay: 0.1s;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.8);
+          background-color: #b3d4fc;
+          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
         }
+        50% {
+          transform: scale(1.2);
+          background-color: #6793fb;
+          box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+        }
+        100% {
+          transform: scale(0.8);
+          background-color: #b3d4fc;
+          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-<div class="app-container-index">
+  <body>
+    <div class="app-container-index">
+      <!-- iframe สำหรับโหลดหน้า GAS -->
+      <iframe id="formframe"></iframe>
 
-    <!-- iframe สำหรับโหลดหน้า GAS -->
-    <iframe id="formframe"></iframe>
-
-    <!-- Loading -->
-    <div id="loadingOverlay">
-        <div class="dots-container">
-            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-        </div>
-    </div>
-
-    <!-- NAVIGATION -->
-    <footer class="footer-buttons">
+      <!-- NAVIGATION -->
+      <footer class="footer-buttons">
         <div class="navigation">
-            <ul>
-                <li class="list active" data-page="home">
-                    <a href="#"><span class="icon"><ion-icon name="home-outline"></ion-icon></span><span class="title">Home</span></a>
-                </li>
+          <ul>
+            <li class="list active" data-page="home">
+              <a href="#"
+                ><span class="icon"
+                  ><ion-icon name="home-outline"></ion-icon></span
+                ><span class="title">Home</span></a
+              >
+            </li>
 
-                <li class="list" data-page="schedule">
-                    <a href="#"><span class="icon"><ion-icon name="calendar-outline"></ion-icon></span><span class="title">Schedule</span></a>
-                </li>
+            <li class="list" data-page="schedule">
+              <a href="#"
+                ><span class="icon"
+                  ><ion-icon name="calendar-outline"></ion-icon></span
+                ><span class="title">Schedule</span></a
+              >
+            </li>
 
-                <li class="list" data-page="notification">
-                    <a href="#"><span class="icon"><ion-icon name="notifications-outline"></ion-icon></span><span class="title">Notification</span></a>
-                </li>
+            <li class="list" data-page="notification">
+              <a href="#"
+                ><span class="icon"
+                  ><ion-icon name="notifications-outline"></ion-icon></span
+                ><span class="title">Notification</span></a
+              >
+            </li>
 
-                <li class="list" data-page="profile">
-                    <a href="#"><span class="icon"><ion-icon name="person-outline"></ion-icon></span><span class="title">Profile</span></a>
-                </li>
-            </ul>
+            <li class="list" data-page="profile">
+              <a href="#"
+                ><span class="icon"
+                  ><ion-icon name="person-outline"></ion-icon></span
+                ><span class="title">Profile</span></a
+              >
+            </li>
+          </ul>
         </div>
-    </footer>
-
-</div>
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-<script src="https://static.line-scdn.net/liff/edge/versions/2.15.0/sdk.js"></script>
-<script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxXUBHqWbJXFq5L5ITn82B9ojckB1YV33Wwo-tjnHkkiJ5QBpkDdCnjwfutPKtnUY8vJw/exec";
-
-let userId = "", displayName = "", pictureUrl = "";
-
-// ---------- เปลี่ยนหน้าโดย iframe ----------
-function switchPage(page) {
-    const frame = document.getElementById("formframe");
-    frame.src = `${GAS_URL}?userId=${userId}&displayName=${displayName}&pictureUrl=${pictureUrl}&page=${page}`;
-}
-
-// ---------- เมนู active ----------
-document.querySelectorAll(".list").forEach(li => {
-    li.addEventListener("click", () => {
-        document.querySelectorAll(".list").forEach(i => i.classList.remove("active"));
-        li.classList.add("active");
-        switchPage(li.dataset.page);
-    });
-});
-
-// ---------- Loading ----------
-window.addEventListener("load", () => {
-    const loading = document.getElementById("loadingOverlay");
-    loading.style.display = "flex";
-    setTimeout(() => { loading.style.display = "none"; }, 1500);
-});
-
-// ---------- LIFF Init ----------
-liff.init({ liffId: "2007981677-Z8m3omk4" })
-.then(() => {
-    if (!liff.isLoggedIn()) return liff.login();
-    return liff.getProfile();
-})
-.then(profile => {
-    userId = profile.userId;
-    displayName = profile.displayName;
-    pictureUrl = profile.pictureUrl;
-
-    switchPage("home");
-});
-</script>
+      </footer>
+    </div>
+    <div
+      id="loadingOverlay"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        pointer-events: all;
+      "
+    >
+      <div class="dots-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+    ></script>
+    <script src="https://static.line-scdn.net/liff/edge/versions/2.15.0/sdk.js"></script>
     <script>
-window.addEventListener("message", (event) => {
-    if (event.data.type === "registrationStatus") {
+      const GAS_URL =
+        "https://script.google.com/macros/s/AKfycbxXUBHqWbJXFq5L5ITn82B9ojckB1YV33Wwo-tjnHkkiJ5QBpkDdCnjwfutPKtnUY8vJw/exec";
 
-        if (!event.data.isRegistered) {
+      let userId = "",
+        displayName = "",
+        pictureUrl = "";
+
+      // ---------- เปลี่ยนหน้าโดย iframe ----------
+      function switchPage(page) {
+        const frame = document.getElementById("formframe");
+        frame.src = `${GAS_URL}?userId=${userId}&displayName=${displayName}&pictureUrl=${pictureUrl}&page=${page}`;
+      }
+
+      // ---------- เมนู active ----------
+      document.querySelectorAll(".list").forEach((li) => {
+        li.addEventListener("click", () => {
+          document
+            .querySelectorAll(".list")
+            .forEach((i) => i.classList.remove("active"));
+          li.classList.add("active");
+          switchPage(li.dataset.page);
+        });
+      });
+
+      // ---------- Loading ----------
+      // แสดง loading ทันทีที่เปิดหน้าเว็บ
+      window.addEventListener("load", function () {
+        document.getElementById("loadingOverlay").style.display = "flex";
+
+        // เพิ่มดีเลย์ให้โหลดประมาณ 1 วินาที หรือปรับตามต้องการ
+        setTimeout(() => {
+          document.getElementById("loadingOverlay").style.display = "none";
+        }, 5000);
+      });
+
+      function showLoading() {
+        document.getElementById("loadingOverlay").style.display = "flex";
+      }
+
+      // ---------- LIFF Init ----------
+      liff
+        .init({ liffId: "2007981677-Z8m3omk4" })
+        .then(() => {
+          if (!liff.isLoggedIn()) return liff.login();
+          return liff.getProfile();
+        })
+        .then((profile) => {
+          userId = profile.userId;
+          displayName = profile.displayName;
+          pictureUrl = profile.pictureUrl;
+
+          switchPage("home");
+        });
+    </script>
+    <script>
+      window.addEventListener("message", (event) => {
+        if (event.data.type === "registrationStatus") {
+          if (!event.data.isRegistered) {
             document.querySelector(".footer-buttons").style.display = "none";
-        } else {
+          } else {
             document.querySelector(".footer-buttons").style.display = "flex";
+          }
         }
-
-    }
-});
-</script>
-
-</body>
+      });
+    </script>
+  </body>
 </html>
