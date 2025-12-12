@@ -288,7 +288,7 @@
     <script src="https://static.line-scdn.net/liff/edge/versions/2.15.0/sdk.js"></script>
     <script>
       const GAS_URL =
-        "https://script.google.com/macros/s/AKfycbwugVcs-R0QGOXOj-A8iAm3SKsx8EmDB5Qf5iwUsDyOz_RY_HGRvKoGhh0qTyU62kQ2zQ/exec";
+        "https://script.google.com/macros/s/AKfycbyUSOd0LyDVnm2fz-Hircb8R8aawArFMz34cz9-pozzzv0BVgyNN0JookZruzpOnFzGMQ/exec";
 
       let userId = "",
         displayName = "",
@@ -348,7 +348,17 @@
             document.querySelector(".footer-buttons").style.display = "flex";
           }
         }
+        if (event.data.type === "changePage") {
+    switchPage(event.data.page);
+  }
+        // ⭐ ซ่อนเมนูเมื่อเข้าหน้า addpet
+  if (event.data.type === "openAddPet") {
+    document.querySelector(".footer-buttons").style.display = "none";
+    switchPage("addpet");
+  }
       });
+      
+      
     </script>
   </body>
 </html>
