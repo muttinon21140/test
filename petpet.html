@@ -3,144 +3,241 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PetPet System</title>
+
     <style>
-        html,
         body {
+            font-family: "Prompt", sans-serif;
+            background-color: #f0f4f9;
             margin: 0;
-            width: 100%;
-            height: 100%;
+            padding: 0;
+            display: flex;
+            justify-content: center;
         }
 
         iframe {
             width: 100%;
+            height: 100vh;
+            border: 0;
+        }
+
+        /* ———— YOUR NAVIGATION CSS (KEEPED EXACTLY AS IS) ———— */
+
+        .app-container-index {
+            width: 100%;
+            max-width: 410px;
+            min-height: 100vh;
+            padding-bottom: 120px;
+            box-sizing: border-box;
+        }
+
+        .footer-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 410px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .navigation {
+            width: 330px;
+            height: 100px;
+            background: #fff;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.05);
+            padding: 0 20px;
+            margin: auto;
+        }
+
+        .navigation ul {
+            display: flex;
+            width: 100%;
+            padding: 0 10px;
+            justify-content: space-between;
+        }
+
+        .navigation ul li {
+            list-style: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.5s;
+            overflow: hidden;
+        }
+
+        .navigation ul li.active {
+            width: 140px;
+            background: #275c27;
+        }
+
+        .navigation ul li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .navigation ul li.active a .icon {
+            color: #fff;
+        }
+
+        .navigation ul li a .icon {
+            min-width: 50px;
+            height: 50px;
+            line-height: 55px;
+            text-align: center;
+            font-size: 1.5em;
+            transition: 0.5s;
+        }
+
+        .navigation ul li a .title {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: 0.5s;
+            color: #fff;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .navigation ul li.active a .title {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Loading */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
         }
-        /* From Uiverse.io by adamgiebl */
-      .dots-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        width: 100%;
-      }
 
-      .dot {
-        height: 20px;
-        width: 20px;
-        margin-right: 10px;
-        border-radius: 10px;
-        background-color: #b3d4fc;
-        animation: pulse 1.5s infinite ease-in-out;
-      }
-
-      .dot:last-child {
-        margin-right: 0;
-      }
-
-      .dot:nth-child(1) {
-        animation-delay: -0.3s;
-      }
-
-      .dot:nth-child(2) {
-        animation-delay: -0.1s;
-      }
-
-      .dot:nth-child(3) {
-        animation-delay: 0.1s;
-      }
-
-      @keyframes pulse {
-        0% {
-          transform: scale(0.8);
-          background-color: #b3d4fc;
-          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+        .dots-container {
+            display: flex;
         }
-        50% {
-          transform: scale(1.2);
-          background-color: #6793fb;
-          box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+
+        .dot {
+            height: 20px;
+            width: 20px;
+            margin-right: 10px;
+            border-radius: 10px;
+            background-color: #b3d4fc;
+            animation: pulse 1.5s infinite ease-in-out;
         }
-        100% {
-          transform: scale(0.8);
-          background-color: #b3d4fc;
-          box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
-        }
-      }
     </style>
 </head>
 
 <body>
-    <iframe id="formframe" src="" frameborder="0"></iframe>
-    <div
-      id="loadingOverlay"
-      style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.9);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        pointer-events: all;
-      "
-    >
-      <div class="dots-container">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-      </div>
+<div class="app-container-index">
+
+    <!-- iframe สำหรับโหลดหน้า GAS -->
+    <iframe id="formframe"></iframe>
+
+    <!-- Loading -->
+    <div id="loadingOverlay">
+        <div class="dots-container">
+            <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
     </div>
-</body>
+
+    <!-- NAVIGATION -->
+    <footer class="footer-buttons">
+        <div class="navigation">
+            <ul>
+                <li class="list active" data-page="home">
+                    <a href="#"><span class="icon"><ion-icon name="home-outline"></ion-icon></span><span class="title">Home</span></a>
+                </li>
+
+                <li class="list" data-page="schedule">
+                    <a href="#"><span class="icon"><ion-icon name="calendar-outline"></ion-icon></span><span class="title">Schedule</span></a>
+                </li>
+
+                <li class="list" data-page="notification">
+                    <a href="#"><span class="icon"><ion-icon name="notifications-outline"></ion-icon></span><span class="title">Notification</span></a>
+                </li>
+
+                <li class="list" data-page="profile">
+                    <a href="#"><span class="icon"><ion-icon name="person-outline"></ion-icon></span><span class="title">Profile</span></a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
+</div>
+
 <script src="https://static.line-scdn.net/liff/edge/versions/2.15.0/sdk.js"></script>
+
 <script>
-    // อ่านพารามิเตอร์จาก URL ของ LIFF
-const urlParams = new URLSearchParams(window.location.search);
-const requestedPage = urlParams.get("page");   // เช่น payment / history
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzyVGNCqQptuIOdt0vUYHOxi-C6yqj_4Q5MTIgU-FvavgwyTuV96U49O1405qh_vYe2/exec";
 
-    // แสดง loading ทันทีที่เปิดหน้าเว็บ
-  window.addEventListener("load", function () {
-    document.getElementById("loadingOverlay").style.display = "flex";
+let userId = "", displayName = "", pictureUrl = "";
 
-    // เพิ่มดีเลย์ให้โหลดประมาณ 1 วินาที หรือปรับตามต้องการ
-    setTimeout(() => {
-      document.getElementById("loadingOverlay").style.display = "none";
-    }, 5000);
-  });
-    
-    function showLoading() {
-        document.getElementById("loadingOverlay").style.display = "flex";
-      }
-    
-    function runApp() {
-        liff.getProfile().then(profile => {
-            let userId = profile.userId;
-            let displayName = profile.displayName;
-            let pictureUrl = profile.pictureUrl;
-            let url = "https://script.google.com/macros/s/AKfycbzyVGNCqQptuIOdt0vUYHOxi-C6yqj_4Q5MTIgU-FvavgwyTuV96U49O1405qh_vYe2/exec?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
+// ---------- เปลี่ยนหน้าโดย iframe ----------
+function switchPage(page) {
+    const frame = document.getElementById("formframe");
+    frame.src = `${GAS_URL}?userId=${userId}&displayName=${displayName}&pictureUrl=${pictureUrl}&page=${page}`;
+}
 
-            // ⭐ ถ้ามีพารามิเตอร์ page ให้ส่งต่อไป GAS
-        if (requestedPage) {
-            url += "&page=" + requestedPage;
-        }
-            
-            document.getElementById("formframe").src = url;
-        }).catch(err => console.error(err));
-    }
+// ---------- เมนู active ----------
+document.querySelectorAll(".list").forEach(li => {
+    li.addEventListener("click", () => {
+        document.querySelectorAll(".list").forEach(i => i.classList.remove("active"));
+        li.classList.add("active");
+        switchPage(li.dataset.page);
+    });
+});
 
-    liff.init({ liffId: "2007981677-Z8m3omk4" }, () => {
-        if (liff.isLoggedIn()) {
-            runApp();
+// ---------- Loading ----------
+window.addEventListener("load", () => {
+    const loading = document.getElementById("loadingOverlay");
+    loading.style.display = "flex";
+    setTimeout(() => { loading.style.display = "none"; }, 1500);
+});
+
+// ---------- LIFF Init ----------
+liff.init({ liffId: "2007981677-Z8m3omk4" })
+.then(() => {
+    if (!liff.isLoggedIn()) return liff.login();
+    return liff.getProfile();
+})
+.then(profile => {
+    userId = profile.userId;
+    displayName = profile.displayName;
+    pictureUrl = profile.pictureUrl;
+
+    switchPage("home");
+});
+</script>
+    <script>
+window.addEventListener("message", (event) => {
+    if (event.data.type === "registrationStatus") {
+
+        if (!event.data.isRegistered) {
+            document.querySelector(".footer-buttons").style.display = "none";
         } else {
-            liff.login();
+            document.querySelector(".footer-buttons").style.display = "flex";
         }
-    }, err => console.error(err.code, error.message));
 
+    }
+});
 </script>
 
+</body>
 </html>
