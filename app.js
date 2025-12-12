@@ -3,20 +3,22 @@ const liffId = "2007981677-Z8m3omk4";
 async function initializeLiff() {
   await liff.init({ liffId });
 
-  if (liff.isLoggedIn()) {
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
-    const displayName = profile.displayName;
-    const pictureUrl = profile.pictureUrl;
-
-    updateuserId(userId);
-    updateDisplayName(displayName);
-    updatepictureUrl(pictureUrl);
-  } else {
+  if (!liff.isLoggedIn()) {
     const loginBtn = document.getElementById("loginBtn");
     if (loginBtn) loginBtn.style.display = "block";
+    return;
   }
+
+  // --- ถ้า Login แล้ว โหลดหน้า SPA ---
+  handleHashChange();
+
+  // ดึงโปรไฟล์
+  const profile = await liff.getProfile();
+  updateUserId(profile.userId);
+  updateDisplayName(profile.displayName);
+  updatePictureUrl(profile.pictureUrl);
 }
+
 
 // ใส่ชื่อให้ทุก element  ที่เจอ
 function updateUserId(userId) {
@@ -82,9 +84,6 @@ function handleHashChange() {
   const hash = location.hash.replace("#", "") || "home";
   loadPage(hash);
 }
-
-// เมื่อเปิดเว็บครั้งแรก
-handleHashChange();
 
 // เมื่อกดลิงก์ #xxx
 window.addEventListener("hashchange", handleHashChange);
