@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test System</title>
+    <title>PetPet System</title>
     <style>
         html,
         body {
@@ -122,7 +122,7 @@ const requestedPage = urlParams.get("page");   // เช่น payment / history
             let userId = profile.userId;
             let displayName = profile.displayName;
             let pictureUrl = profile.pictureUrl;
-            let url = "https://script.google.com/macros/s/AKfycbwd3Q9EkC0Y8aYDFx5rTtDIsn0NjJTYMct_LYZlFZbGjB9uXO27xgAgb6rwpDnoeJnfnw/exec?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
+            let url = "https://script.google.com/macros/s/AKfycbzyVGNCqQptuIOdt0vUYHOxi-C6yqj_4Q5MTIgU-FvavgwyTuV96U49O1405qh_vYe2/exec?userId=" + userId + "&displayName=" + displayName + "&pictureUrl=" + pictureUrl;
 
             // ⭐ ถ้ามีพารามิเตอร์ page ให้ส่งต่อไป GAS
         if (requestedPage) {
