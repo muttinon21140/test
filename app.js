@@ -5,17 +5,36 @@ async function initializeLiff() {
 
   if (liff.isLoggedIn()) {
     const profile = await liff.getProfile();
-    updateDisplayName(profile.displayName);
+    const userId = profile.userId;
+    const displayName = profile.displayName;
+    const pictureUrl = profile.pictureUrl;
+
+    updateuserId(userId);
+    updateDisplayName(displayName);
+    updatepictureUrl(pictureUrl);
   } else {
     const loginBtn = document.getElementById("loginBtn");
     if (loginBtn) loginBtn.style.display = "block";
   }
 }
 
+// ใส่ชื่อให้ทุก element  ที่เจอ
+function updateUserId(userId) {  
+  const elements = document.querySelectorAll(".userId"); // เปลี่ยนจาก #userId เป็น class
+  elements.forEach(el => el.textContent = userId);
+}
+
 function updateDisplayName(name) {
-  // ใส่ชื่อให้ทุก element #displayName ที่เจอ
-  const displayElements = document.querySelectorAll("#displayName");
-  displayElements.forEach(el => el.textContent = name);
+  const elements = document.querySelectorAll(".displayName"); // ใช้ class แทน id
+  elements.forEach(el => el.textContent = name);
+}
+
+function updatePictureUrl(pictureUrl){
+  const imgs = document.querySelectorAll(".picture"); // ใช้ class และ <img>
+  imgs.forEach(img => {
+    img.src = pictureUrl;
+    img.alt = "Profile Picture"; // เผื่อรูปไม่โหลด
+  });
 }
 
 const loginBtn = document.getElementById("loginBtn");
