@@ -212,7 +212,7 @@
   <body>
     <div class="app-container-index">
       <!-- iframe สำหรับโหลดหน้า GAS -->
-      <iframe id="formframe"></iframe>
+      <iframe id="formframe" src="" frameborder="0" onload="resizeIframe()"></iframe>
 
       <!-- NAVIGATION -->
       <footer class="footer-buttons">
@@ -337,9 +337,7 @@
           pictureUrl = profile.pictureUrl;
 
           switchPage("home");
-        });
-    </script>
-    <script>
+        });   
       window.addEventListener("message", (event) => {
         if (event.data.type === "registrationStatus") {
           if (!event.data.isRegistered) {
@@ -349,6 +347,27 @@
           }
         }
       });
+      // ปรับความสูง iframe อัตโนมัติเมื่อ iframe โหลดเสร็จ
+function resizeIframe() {
+    const iframe = document.getElementById("formframe");
+
+    try {
+        const body = iframe.contentWindow.document.body;
+        const html = iframe.contentWindow.document.documentElement;
+
+        const height = Math.max(
+            body.scrollHeight,
+            body.offsetHeight,
+            html.clientHeight,
+            html.scrollHeight,
+            html.offsetHeight
+        );
+
+        iframe.style.height = height + "px";
+    } catch (e) {
+        console.warn("Cannot access iframe content yet");
+    }
+}
     </script>
   </body>
 </html>
