@@ -1,22 +1,17 @@
-// 1. กำหนด LIFF ID (ได้จาก LINE Developers Console)
+// 1. ฟังก์ชันสำหรับ LIFF
 const liffId = "2007981677-Z8m3omk4";
 
-// 2. เริ่มต้น LIFF
 async function initializeLiff() {
   await liff.init({ liffId });
-  console.log("LIFF Initialized");
 
   if (liff.isLoggedIn()) {
-    console.log("User is logged in");
     const profile = await liff.getProfile();
-    console.log(profile.displayName, profile.userId);
+    document.getElementById("displayName").textContent = profile.displayName;
   } else {
-    console.log("User not logged in");
     document.getElementById("loginBtn").style.display = "block";
   }
 }
 
-// 3. ฟังก์ชัน login/logout
 document.getElementById("loginBtn").addEventListener("click", () => {
   liff.login();
 });
@@ -35,9 +30,12 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   }
 });
 
-// 4. เรียก initialize ตอนโหลดเว็บ
 initializeLiff();
 
+
+
+
+// 2. ฟังก์ชันส่งข้อมูลไปยัง Google Apps Script
 async function sendToGAS(userId, message) {
   const url = "https://script.google.com/macros/s/AKfycbyUSOd0LyDVnm2fz-Hircb8R8aawArFMz34cz9-pozzzv0BVgyNN0JookZruzpOnFzGMQ/exec";
   // URL ของ GAS Web App
