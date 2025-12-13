@@ -31,16 +31,26 @@ async function initializeLiff() {
   updatePictureUrl(profile.pictureUrl);
 }
 
-async function checkRegistration(userId) {
-  const url =
-    "https://script.google.com/macros/s/AKfycbw7jfP2LnNAIht5kJPhlgwS3IqqBZTbunHWqWenuq0TrHIwHNnAzu5v7O9aAXi5jKqfZA/exec" +
-    "?action=checkUser" +
-    "&userId=" +
-    encodeURIComponent(userId);
+function checkRegistration(userId) {
+  return new Promise((resolve) => {
+    const cb = "cb_" + Date.now();
 
-  const res = await fetch(url);
-  return await res.json();
+    window[cb] = (data) => {
+      resolve(data);
+      delete window[cb];
+    };
+
+    const script = document.createElement("script");
+    script.src =
+      "https://script.google.com/macros/s/AKfycby3J0wym16w76Y1UpgjzIErZiDKdpqQFsgNtwCYDi81Lp6H-rDpIxgAOZqMIDL__H5KHw/exec" +
+      "?action=checkUser" +
+      "&userId=" + encodeURIComponent(userId) +
+      "&callback=" + cb;
+
+    document.body.appendChild(script);
+  });
 }
+
 
 // ใส่ชื่อให้ทุก element  ที่เจอ
 function updateUserId(userId) {
