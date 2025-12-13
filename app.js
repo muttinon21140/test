@@ -57,7 +57,7 @@ function checkRegistration(userId) {
 
     const script = document.createElement("script");
     script.src =
-      "https://script.google.com/macros/s/AKfycby3J0wym16w76Y1UpgjzIErZiDKdpqQFsgNtwCYDi81Lp6H-rDpIxgAOZqMIDL__H5KHw/exec" +
+      "https://script.google.com/macros/s/AKfycbx29C1E_Gz-TI8axMoJSHgWHj2LLEcW90xzcq6IYKnTlWQ2k2e6oQ78CTUgW2jltoDQhA/exec" +
       "?action=checkUser" +
       "&userId=" + encodeURIComponent(userId) +
       "&callback=" + cb;
