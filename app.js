@@ -9,16 +9,38 @@ async function initializeLiff() {
     return;
   }
 
+  const profile = await liff.getProfile();
+
+  // 🔍 เช็คว่าลงทะเบียนหรือยัง
+  const result = await checkRegistration(profile.userId);
+
+  if (!result.registered) {
+    // ❌ ยังไม่ลงทะเบียน → ไปหน้า register
+    if (location.hash !== "#register") {
+      location.hash = "register";
+    }
+    return;
+  }
+
   // --- ถ้า Login แล้ว โหลดหน้า SPA ---
   handleHashChange();
 
   // ดึงโปรไฟล์
-  const profile = await liff.getProfile();
   updateUserId(profile.userId);
   updateDisplayName(profile.displayName);
   updatePictureUrl(profile.pictureUrl);
 }
 
+async function checkRegistration(userId) {
+  const url =
+    "https://script.google.com/macros/s/AKfycbw7jfP2LnNAIht5kJPhlgwS3IqqBZTbunHWqWenuq0TrHIwHNnAzu5v7O9aAXi5jKqfZA/exec" +
+    "?action=checkUser" +
+    "&userId=" +
+    encodeURIComponent(userId);
+
+  const res = await fetch(url);
+  return await res.json();
+}
 
 // ใส่ชื่อให้ทุก element  ที่เจอ
 function updateUserId(userId) {
@@ -79,9 +101,22 @@ async function loadPage(page) {
   }
 }
 
+function syncActiveMenu(hash) {
+  list.forEach((item) => {
+    const a = item.querySelector("a");
+    item.classList.toggle("active", a.getAttribute("href") === "#" + hash);
+  });
+}
+
 // กดลิงก์ #xxx
 function handleHashChange() {
   const hash = location.hash.replace("#", "") || "home";
+
+  const footer = document.querySelector(".footer-buttons");
+  if (footer) {
+    footer.style.display = hash === "register" ? "none" : "flex";
+  }
+  syncActiveMenu(hash);
   loadPage(hash);
 }
 
