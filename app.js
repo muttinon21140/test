@@ -1,4 +1,5 @@
 const liffId = "2007981677-Z8m3omk4";
+let isRegistered = false;
 
 async function initializeLiff() {
   console.log("[LIFF] initialize start");
@@ -21,10 +22,13 @@ async function initializeLiff() {
   // 🔍 เช็คว่าลงทะเบียนหรือยัง
   console.log("[CHECK] checking registration for", profile.userId);
   const result = await checkRegistration(profile.userId);
+  isRegistered = result.registered;
   console.log("[CHECK] result", result);
 
   if (!result.registered) {
     console.log("[CHECK] user NOT registered → go register");
+    const footer = document.querySelector(".footer-buttons");
+    if (footer) footer.style.display = "none";
     if (location.hash !== "#register") {
       location.hash = "register";
     }
@@ -33,8 +37,13 @@ async function initializeLiff() {
 
   console.log("[CHECK] user registered");
 
-  // --- ถ้า Login แล้ว โหลดหน้า SPA ---
-  handleHashChange();
+  const footer = document.querySelector(".footer-buttons");
+  if (footer) footer.style.display = "flex";
+
+  // ✅ ใช้แบบนี้แทน
+  if (!location.hash) {
+    location.hash = "home";
+  }
 
   // ดึงโปรไฟล์
   updateUserId(profile.userId);
@@ -48,14 +57,15 @@ function checkRegistration(userId) {
   return new Promise((resolve) => {
     const cb = "cb_" + Date.now();
     console.log("[JSONP] callback =", cb);
+    const script = document.createElement("script");
 
     window[cb] = (data) => {
       console.log("[JSONP] response", data);
       resolve(data);
       delete window[cb];
+      script.remove(); // ✅ เพิ่มบรรทัดนี้
     };
 
-    const script = document.createElement("script");
     script.src =
       "https://script.google.com/macros/s/AKfycbx29C1E_Gz-TI8axMoJSHgWHj2LLEcW90xzcq6IYKnTlWQ2k2e6oQ78CTUgW2jltoDQhA/exec" +
       "?action=checkUser" +
@@ -139,6 +149,13 @@ function handleHashChange() {
   const hash = location.hash.replace("#", "") || "home";
   console.log("[ROUTER] hash change →", hash);
 
+  // ❌ ยังไม่ลงทะเบียน แต่พยายามเข้าหน้าอื่น
+  if (!isRegistered && hash !== "register") {
+    console.warn("[ROUTER] blocked → force register");
+    location.hash = "register";
+    return;
+  }
+
   const footer = document.querySelector(".footer-buttons");
   if (footer) {
     footer.style.display = hash === "register" ? "none" : "flex";
@@ -147,5 +164,6 @@ function handleHashChange() {
   syncActiveMenu(hash);
   loadPage(hash);
 }
+
 
 window.addEventListener("hashchange", handleHashChange);
