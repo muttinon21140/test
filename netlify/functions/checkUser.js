@@ -1,7 +1,7 @@
 // โค้ดนี้จะรันบน Netlify Server และเป็นส่วน 'Private' ของคุณ
 
 // ดึง URL ความลับจาก Environment Variable ที่ตั้งไว้ใน Netlify Admin
-const APPS_SCRIPT_BASE_URL = process.env.GAS_CHECK_USER_URL; 
+const APPS_SCRIPT_BASE_URL = process.env.GAS_API_URL; 
 
 exports.handler = async (event, context) => {
   // 1. รับพารามิเตอร์ userId จาก Frontend
