@@ -1,5 +1,6 @@
 const liffId = "2007981677-Z8m3omk4";
 let isRegistered = false;
+const NETLIFY_FUNCTION_URL = "https://petpettest.netlify.app/.netlify/functions/checkUser";
 
 async function initializeLiff() {
   console.log("[LIFF] initialize start");
@@ -51,31 +52,56 @@ async function initializeLiff() {
   updatePictureUrl(profile.pictureUrl);
 }
 
+// function checkRegistration(userId) {
+//   console.log("[JSONP] prepare request", userId);
+
+//   return new Promise((resolve) => {
+//     const cb = "cb_" + Date.now();
+//     console.log("[JSONP] callback =", cb);
+//     const script = document.createElement("script");
+
+//     window[cb] = (data) => {
+//       console.log("[JSONP] response", data);
+//       resolve(data);
+//       delete window[cb];
+//       script.remove(); // ✅ เพิ่มบรรทัดนี้
+//     };
+
+//     script.src =
+//       "https://script.google.com/macros/s/AKfycbx29C1E_Gz-TI8axMoJSHgWHj2LLEcW90xzcq6IYKnTlWQ2k2e6oQ78CTUgW2jltoDQhA/exec" +
+//       "?action=checkUser" +
+//       "&userId=" + encodeURIComponent(userId) +
+//       "&callback=" + cb;
+
+//     console.log("[JSONP] request url", script.src);
+//     document.body.appendChild(script);
+//   });
+// }
+
 function checkRegistration(userId) {
-  console.log("[JSONP] prepare request", userId);
+  console.log("[PROXY] prepare request", userId);
 
-  return new Promise((resolve) => {
-    const cb = "cb_" + Date.now();
-    console.log("[JSONP] callback =", cb);
-    const script = document.createElement("script");
+  // *** ลบโค้ด JSONP เดิมที่สร้าง <script> และเปิดเผย Apps Script URL ออกไป ***
 
-    window[cb] = (data) => {
-      console.log("[JSONP] response", data);
-      resolve(data);
-      delete window[cb];
-      script.remove(); // ✅ เพิ่มบรรทัดนี้
-    };
-
-    script.src =
-      "https://script.google.com/macros/s/AKfycbx29C1E_Gz-TI8axMoJSHgWHj2LLEcW90xzcq6IYKnTlWQ2k2e6oQ78CTUgW2jltoDQhA/exec" +
-      "?action=checkUser" +
-      "&userId=" + encodeURIComponent(userId) +
-      "&callback=" + cb;
-
-    console.log("[JSONP] request url", script.src);
-    document.body.appendChild(script);
-  });
+  // ใช้ fetch API เพื่อเรียก Proxy แทน
+  return fetch(`${NETLIFY_FUNCTION_URL}?userId=${encodeURIComponent(userId)}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json(); // อ่านผลลัพธ์ที่เป็น JSON สะอาด
+    })
+    .then(data => {
+      console.log("[PROXY] response", data);
+      return data; 
+    })
+    .catch(error => {
+      console.error("[PROXY] Error fetching registration:", error);
+      return { registered: false };
+    });
 }
+
+// *** โค้ดส่วนอื่นๆ ที่ไม่ได้แสดงในนี้ (initializeLiff, updateUserId, ฯลฯ) ให้คงไว้เหมือนเดิม ***
 
 // ใส่ชื่อให้ทุก element  ที่เจอ
 function updateUserId(userId) {
