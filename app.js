@@ -146,7 +146,7 @@ async function loadPage(page) {
   console.log("[SPA] load page", page);
 
   try {
-    const res = await fetch(page + ".html");
+    const res = await fetch('./' + page + ".html");
     const html = await res.text();
     document.getElementById("app").innerHTML = html;
 
