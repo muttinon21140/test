@@ -34,7 +34,12 @@ exports.handler = async (event, context) => {
     // 5. ส่งผลลัพธ์ที่เป็น JSON สะอาดกลับไปให้ Frontend
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        // **** เพิ่มบรรทัดนี้เพื่อแก้ไขปัญหา CORS ****
+        "Access-Control-Allow-Origin": "*", // อนุญาตให้โดเมนใดก็ได้เรียกได้ (ถ้าต้องการจำกัดให้เปลี่ยนเป็น 'https://muttinon21140.github.io')
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      },
       body: JSON.stringify(result),
     };
 
