@@ -215,9 +215,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      const userId = "<?= userId ?>";
-      const userLineName = "<?= userLineName ?>";
-      const userPictureUrl = "<?= profileImage ?>";
+      const params = new URLSearchParams(window.location.search);
+
+      const userId = params.get("userId");
+      const userLineName = params.get("displayName");
+      const userPictureUrl = params.get("pictureUrl"); // ถ้ามี
+
+      console.log("userId:", userId);
+
+      if (!userId) {
+        alert("ไม่พบ userId");
+      }
 
       function showLoading() {
         document.getElementById("loadingOverlay").style.display = "flex";
